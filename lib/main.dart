@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,6 +10,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        // localizations delegateを追加
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''), // 英語
+        Locale('ja', ''), // 日本語
+      ],
       title: 'ふらったー',
       theme: ThemeData(
         primarySwatch: Colors.green,
@@ -35,40 +46,67 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('AlertDialog Title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('This is a demo alert dialog.'),
+                Text('Would you like to approve of this message?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 300,
-            ),
-            Container(
-              height: 200,
-              child: Text('説明書き'),
-            ),
-            Container(
-              width: 200,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: const <Widget>[
-                  TextField(decoration: InputDecoration(hintText: 'メールアドレス')),
-                  TextField(decoration: InputDecoration(hintText: 'パスワード'))
-                ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 300,
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 200,
+                child: Text('説明書き'),
+              ),
+              Container(
+                width: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ElevatedButton(
+                      child: const Text('人生の価値観カードゲーム'),
+                      onPressed: () => _showMyDialog(),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
